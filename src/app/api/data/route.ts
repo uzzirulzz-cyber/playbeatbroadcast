@@ -21,6 +21,7 @@ export async function GET() {
     team,
     webhooks,
     apiKeys,
+    socialPosts,
   ] = await Promise.all([
     db.organization.findUnique({ where: { id: organizationId } }),
     db.contact.findMany({ where: { organizationId }, orderBy: { createdAt: "desc" } }),
@@ -54,6 +55,7 @@ export async function GET() {
     }),
     db.webhook.findMany({ where: { organizationId } }),
     db.apiKey.findMany({ where: { organizationId }, orderBy: { createdAt: "desc" } }),
+    db.socialPost.findMany({ where: { organizationId }, orderBy: { createdAt: "desc" } }),
   ]);
 
   const activeCampaigns = campaigns.filter((c) => c.status === "active").length;
@@ -64,6 +66,11 @@ export async function GET() {
     ? Math.round((campaigns.reduce((s, c) => s + c.deliveredCount, 0) / totalSent) * 100)
     : 0;
   const replyRate = totalSent > 0 ? Math.round((totalReplies / totalSent) * 100) : 0;
+  const socialChannels = channels.filter((c) =>
+    ["facebook", "instagram", "tiktok"].includes(c.type),
+  );
+  const publishedSocial = socialPosts.filter((p) => p.status === "published");
+  const socialReach = publishedSocial.reduce((s, p) => s + p.reach, 0);
 
   return NextResponse.json({
     organization,
@@ -116,6 +123,24 @@ export async function GET() {
       lastUsedAt: k.lastUsedAt,
       revoked: Boolean(k.revokedAt),
     })),
+    socialPosts: socialPosts.map((p) => ({
+      id: p.id,
+      platform: p.platform,
+      content: p.content,
+      hashtags: p.hashtags,
+      link: p.link,
+      status: p.status,
+      scheduledAt: p.scheduledAt,
+      publishedAt: p.publishedAt,
+      likes: p.likes,
+      comments: p.comments,
+      shares: p.shares,
+      views: p.views,
+      reach: p.reach,
+      aiGenerated: p.aiGenerated,
+      error: p.error,
+      createdAt: p.createdAt,
+    })),
     metrics: {
       totalContacts: contacts.length,
       activeContacts: contacts.filter((c) => c.status === "active").length,
@@ -126,6 +151,9 @@ export async function GET() {
       totalReplies,
       deliveryRate,
       replyRate,
+      socialChannelsConnected: socialChannels.filter((c) => c.enabled).length,
+      socialPostsPublished: publishedSocial.length,
+      socialReach,
     },
   });
 }

@@ -816,3 +816,130 @@ Respond as JSON: {"message":"..."}`,
     return { message: parsed?.message || fallback };
   });
 }
+
+// ===========================================================================
+// Social media post generation (Facebook / Instagram / TikTok)
+// ===========================================================================
+
+export type SocialPlatform = "facebook" | "instagram" | "tiktok";
+
+export interface SocialPostDraft {
+  content: string;
+  hashtags: string[];
+  caption: string; // short hook / first line
+  bestTime: string;
+}
+
+const PLATFORM_GUIDE: Record<SocialPlatform, string> = {
+  facebook: "Facebook: conversational, can be longer (up to ~500 chars), link-friendly, 1-3 emojis, 2-4 relevant hashtags at the end.",
+  instagram: "Instagram: visual-first caption, hook in the first line, emoji-friendly, 8-15 relevant hashtags at the end, max ~2200 chars but keep it punchy.",
+  tiktok: "TikTok: short punchy caption (under 150 chars), trending-style hashtags (3-6), casual tone, emoji-friendly.",
+};
+
+export async function generateSocialPost(
+  organizationId: string,
+  userId: string | null,
+  brief: {
+    platform: SocialPlatform;
+    topic: string;
+    tone?: string;
+    product?: string;
+    cta?: string;
+  },
+): Promise<AIOutcome<SocialPostDraft>> {
+  return run<SocialPostDraft>(organizationId, "image_prompt", userId, async () => {
+    const settings = await isFeatureEnabled(organizationId, "image_prompt");
+    const provider = getProvider(settings.settings.provider);
+    const res = await provider.generateText(
+      [
+        {
+          role: "user",
+          content: `Write a social media post.
+
+Platform: ${brief.platform}
+Topic: ${brief.topic}
+Tone: ${brief.tone || "Engaging"}
+Product/Service: ${brief.product || "N/A"}
+Call to action: ${brief.cta || "Encourage engagement"}
+
+Platform guidance: ${PLATFORM_GUIDE[brief.platform]}
+
+Respond as JSON: {"caption":"short hook first line","content":"full post body including caption","hashtags":["tag1","tag2",...],"bestTime":"recommended posting time with reason"}. Do not include the # symbol in hashtags.`,
+        },
+      ],
+      {
+        temperature: settings.settings.temperature,
+        maxOutput: settings.settings.maxOutput,
+        json: true,
+        system:
+          "You are a social media copywriter. Produce compliant, non-spammy posts optimized for each platform. Never fabricate offers or prices. Respond only with JSON.",
+      },
+    );
+    recordUsage(organizationId, userId, "image_prompt", provider.name, res);
+    const parsed = extractJson<SocialPostDraft>(res.text);
+    if (!parsed) {
+      return {
+        content: res.text,
+        hashtags: [],
+        caption: res.text.split("\n")[0] || "",
+        bestTime: "Weekday 11am-1pm",
+      };
+    }
+    return {
+      content: parsed.content,
+      hashtags: Array.isArray(parsed.hashtags) ? parsed.hashtags : [],
+      caption: parsed.caption || "",
+      bestTime: parsed.bestTime || "Weekday 11am-1pm",
+    };
+  });
+}
+
+// ===========================================================================
+// Social post analysis (for the Social hub analytics)
+// ===========================================================================
+
+export interface SocialPostAnalysis {
+  summary: string;
+  topPerformer: string;
+  recommendations: string[];
+}
+
+export async function analyzeSocialPosts(
+  organizationId: string,
+  userId: string | null,
+  posts: Array<{ platform: string; content: string; likes: number; comments: number; shares: number; views: number }>,
+): Promise<AIOutcome<SocialPostAnalysis>> {
+  return run<SocialPostAnalysis>(organizationId, "analysis", userId, async () => {
+    const settings = await isFeatureEnabled(organizationId, "analysis");
+    const provider = getProvider(settings.settings.provider);
+    const res = await provider.generateText(
+      [
+        {
+          role: "user",
+          content: `Analyze the performance of these social media posts. Frame observations as observations, not guaranteed facts.
+
+${posts.map((p, i) => `Post ${i + 1} [${p.platform}] likes=${p.likes} comments=${p.comments} shares=${p.shares} views=${p.views}
+"${p.content.slice(0, 200)}"`).join("\n\n")}
+
+Respond as JSON: {"summary":"...","topPerformer":"which post performed best and why","recommendations":["...","..."]}.`,
+        },
+      ],
+      {
+        temperature: settings.settings.temperature,
+        maxOutput: settings.settings.maxOutput,
+        json: true,
+        system: "You are a social media analyst. Respond only with JSON.",
+      },
+    );
+    recordUsage(organizationId, userId, "analysis", provider.name, res);
+    const parsed = extractJson<SocialPostAnalysis>(res.text);
+    return (
+      parsed || {
+        summary: res.text,
+        topPerformer: "",
+        recommendations: [],
+      }
+    );
+  });
+}
+

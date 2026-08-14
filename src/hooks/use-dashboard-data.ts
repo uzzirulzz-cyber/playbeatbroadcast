@@ -125,6 +125,24 @@ export interface DashboardData {
     lastUsedAt: string | null;
     revoked: boolean;
   }>;
+  socialPosts: Array<{
+    id: string;
+    platform: string;
+    content: string;
+    hashtags: string;
+    link: string | null;
+    status: string;
+    scheduledAt: string | null;
+    publishedAt: string | null;
+    likes: number;
+    comments: number;
+    shares: number;
+    views: number;
+    reach: number;
+    aiGenerated: boolean;
+    error: string | null;
+    createdAt: string;
+  }>;
   metrics: {
     totalContacts: number;
     activeContacts: number;
@@ -135,6 +153,9 @@ export interface DashboardData {
     totalReplies: number;
     deliveryRate: number;
     replyRate: number;
+    socialChannelsConnected: number;
+    socialPostsPublished: number;
+    socialReach: number;
   };
 }
 

@@ -148,6 +148,22 @@ export async function POST(req: Request) {
         }),
       );
 
+    case "social_post":
+      return NextResponse.json(
+        await service.generateSocialPost(organizationId, userId, {
+          platform: body.platform || "facebook",
+          topic: body.topic || "",
+          tone: body.tone,
+          product: body.product,
+          cta: body.cta,
+        }),
+      );
+
+    case "social_analysis":
+      return NextResponse.json(
+        await service.analyzeSocialPosts(organizationId, userId, body.posts || []),
+      );
+
     default:
       return NextResponse.json(
         { ok: false, error: `Unknown AI feature: ${feature}` },

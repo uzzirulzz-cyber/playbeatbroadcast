@@ -138,6 +138,9 @@ export function ChannelBadge({ channel }: { channel: string }) {
     telegram: { label: "Telegram", cls: "bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300" },
     sms: { label: "SMS", cls: "bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300" },
     email: { label: "Email", cls: "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" },
+    facebook: { label: "Facebook", cls: "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300" },
+    instagram: { label: "Instagram", cls: "bg-pink-100 text-pink-700 dark:bg-pink-950/40 dark:text-pink-300" },
+    tiktok: { label: "TikTok", cls: "bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-100" },
   };
   const c = map[channel] || { label: channel, cls: "bg-muted text-muted-foreground" };
   return (

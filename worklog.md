@@ -55,3 +55,34 @@ Stage Summary:
   * Sticky footer (pushed down on long pages) ✅
   * Lint passes clean, no console/runtime errors ✅
 - AI runs in Demo Mode (z-ai-web-dev-sdk) since no OPENAI_API_KEY configured; swaps to real OpenAI automatically when key is present. Both implement the same AIProvider interface.
+
+---
+Task ID: social
+Agent: Z.ai Code (orchestrator)
+Task: Add social media integration (Facebook, Instagram, TikTok) to BroadcastHub
+
+Work Log:
+- Added SocialPost model to Prisma schema (platform, content, hashtags, link, status, scheduledAt, publishedAt, metrics: likes/comments/shares/views/reach, aiGenerated); added socialPosts relation to Organization; db push + regenerate
+- Extended Channel type enum to include facebook | instagram | tiktok
+- Updated ChannelBadge component with brand colors for the 3 new platforms
+- Rewrote Channels section: split into Messaging + Social Media groups, rich channel cards with capabilities list, OAuth-style Connect Account dialog for social platforms, "Open Social Media" CTA banner when social is connected
+- Added generateSocialPost + analyzeSocialPosts to OpenAIService with platform-specific guidance (FB: 500 chars link-friendly; IG: 2200 chars hashtag-heavy; TikTok: 150 chars trending hashtags)
+- Wired social_post + social_analysis features into /api/ai/run dispatcher
+- Built /api/social/posts (GET list, POST create with draft/schedule/publish actions) and /api/social/posts/[id] (PATCH publish/update, DELETE) — all org-scoped
+- Updated /api/data to include socialPosts[] + social metrics (socialChannelsConnected, socialPostsPublished, socialReach)
+- Updated useDashboardData hook types with socialPosts + new metrics
+- Added "social" SectionId, "Social Media" sidebar nav item (Share2 icon), section title, page router entry
+- Built the Social Media section component: stats row (platforms/published/reach/scheduled), Composer (platform selector with brand colors, AI Post Generator panel, content editor with per-platform char limit + tip, hashtags, link, schedule, save draft/schedule/publish), Post Feed (filterable tabs All/Published/Scheduled/Drafts, per-post metrics display, publish-now + delete actions)
+- Updated seed: 3 social channels enabled, 5 sample posts (3 published with realistic metrics, 1 scheduled, 1 draft), 2 social DM conversations (Facebook Messenger + Instagram DM) routed into Correspondence
+- Reset DB and re-seeded
+
+Stage Summary:
+- Verified end-to-end with Agent Browser:
+  * Channels section shows Messaging + Social Media groups with FB/IG/TikTok cards, capabilities, Connect Account dialogs ✅
+  * Social Media section: 3 platforms connected, 3 posts published, 134,400 reach, 1 scheduled ✅
+  * AI Post Generator: generated a polished Facebook post about the AI analytics dashboard + hashtags (MarketingAI, Analytics, DataDrivenMarketing, MarketingTech) ✅
+  * Post feed: shows all 5 posts with platform badges, statuses, hashtags, and metrics (TikTok: 142,000 views / 4,210 likes / 890 shares) ✅
+  * Publish flow: clicking "Publish Now" on a draft updated the published count from 3 → 4 ✅
+  * Correspondence: Instagram + Facebook DMs routed in alongside WhatsApp/SMS, with correct channel badges ✅
+  * Lint clean, no console/runtime errors ✅
+- Social DMs and comments flow into the same Correspondence queue as WhatsApp/Telegram/SMS/Email, so AI reply suggestions, intent detection, sentiment, and routing all apply to social conversations too.

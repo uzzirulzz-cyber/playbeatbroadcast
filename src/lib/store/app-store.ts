@@ -11,6 +11,7 @@ export type SectionId =
   | "automations"
   | "templates"
   | "channels"
+  | "social"
   // AI sections
   | "ai-assistant"
   | "ai-campaign-writer"

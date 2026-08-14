@@ -118,6 +118,9 @@ async function main() {
       { type: "telegram", name: "Telegram Bot", enabled: true },
       { type: "sms", name: "Twilio SMS", enabled: false },
       { type: "email", name: "SMTP Email", enabled: true },
+      { type: "facebook", name: "Facebook Page", enabled: true },
+      { type: "instagram", name: "Instagram Business", enabled: true },
+      { type: "tiktok", name: "TikTok Business", enabled: true },
     ].map((ch) =>
       db.channel.create({
         data: { ...ch, organizationId: org.id, config: "{}" },
@@ -279,6 +282,61 @@ async function main() {
     },
   });
 
+  // Social media DMs routed into Correspondence (Facebook Messenger)
+  const li = contacts[2]; // Li Wei
+  const conv4 = await db.conversation.create({
+    data: {
+      organizationId: org.id,
+      contactId: li.id,
+      channel: "facebook",
+      status: "open",
+      priority: "normal",
+    },
+  });
+  for (const m of [
+    { direction: "inbound", body: "Saw your summer sale post on the page — is the 40% off available for the Enterprise plan too?", senderName: "Li Wei" },
+    { direction: "outbound", body: "Hi Li! Thanks for reaching out via Messenger. Yes, the 40% off applies to all plans this week. Want me to send a signup link?", senderName: "Sara" },
+    { direction: "inbound", body: "Yes please, and do you have a demo video?", senderName: "Li Wei" },
+  ]) {
+    await db.conversationMessage.create({
+      data: {
+        conversationId: conv4.id,
+        contactId: li.id,
+        direction: m.direction,
+        channel: "facebook",
+        body: m.body,
+        senderName: m.senderName,
+      },
+    });
+  }
+
+  // Instagram DM
+  const emma = contacts[5]; // Emma Johnson
+  const conv5 = await db.conversation.create({
+    data: {
+      organizationId: org.id,
+      contactId: emma.id,
+      channel: "instagram",
+      status: "open",
+      priority: "normal",
+    },
+  });
+  for (const m of [
+    { direction: "inbound", body: "Love your latest reel! Can I get the Premium plan with the discount you posted?", senderName: "Emma Johnson" },
+    { direction: "outbound", body: "Hi Emma! So glad you enjoyed the reel 🙌 Yes — the Premium plan is 40% off this week. I can set you up right now.", senderName: "Sara" },
+  ]) {
+    await db.conversationMessage.create({
+      data: {
+        conversationId: conv5.id,
+        contactId: emma.id,
+        direction: m.direction,
+        channel: "instagram",
+        body: m.body,
+        senderName: m.senderName,
+      },
+    });
+  }
+
   // Automations (spec #83, #86)
   await db.automation.create({
     data: {
@@ -386,6 +444,65 @@ async function main() {
         "BroadcastHub is an omnichannel communication platform offering WhatsApp, Telegram, SMS and Email broadcasting with AI assistance.",
       workingHours: "09:00-18:00",
       enabled: true,
+    },
+  });
+
+  // Sample social media posts (Facebook / Instagram / TikTok)
+  await db.socialPost.create({
+    data: {
+      organizationId: org.id,
+      platform: "facebook",
+      content: "Summer is here, and so is our biggest sale of the year! ☀️ Get 40% off ALL plans this week only. Whether you're a small business or scaling enterprise, BroadcastHub has the tools to reach your customers on WhatsApp, Telegram, SMS, Email AND social. Tap the link to claim your discount 👇",
+      hashtags: "summer sale, broadcasthub, omnichannel, marketing",
+      link: "https://broadcasthub.example.com/summer",
+      status: "published",
+      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      postId: "fb_1001",
+      likes: 342, comments: 58, shares: 47, views: 8420, reach: 12100,
+      aiGenerated: true,
+    },
+  });
+  await db.socialPost.create({
+    data: {
+      organizationId: org.id,
+      platform: "instagram",
+      content: "Behind every great campaign is a great team 🤝\n\nOur AI-powered Campaign Writer takes your plain-English brief and drafts the message, CTA, audience suggestion and timing — all reviewed by you before sending.\n\nNo more staring at a blank page. Just describe it. ✨",
+      hashtags: "marketing, ai, contentcreation, socialmedia, smallbusiness, digitalmarketing, broadcasthub, productivity, automation, growth",
+      status: "published",
+      publishedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+      postId: "ig_2001",
+      likes: 894, comments: 121, shares: 89, views: 18600, reach: 24300,
+    },
+  });
+  await db.socialPost.create({
+    data: {
+      organizationId: org.id,
+      platform: "tiktok",
+      content: "POV: you found an omnichannel tool that actually does it all 🤯 WhatsApp + Telegram + SMS + Email + Social, all in one dashboard 🚀 #smallbusiness #marketing",
+      hashtags: "smallbusiness, marketing, fyp, tech, business",
+      status: "published",
+      publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      postId: "tt_3001",
+      likes: 4210, comments: 312, shares: 890, views: 142000, reach: 98000,
+    },
+  });
+  await db.socialPost.create({
+    data: {
+      organizationId: org.id,
+      platform: "facebook",
+      content: "Customer support shouldn't mean juggling 5 inboxes. With BroadcastHub, Messenger, Instagram DMs, WhatsApp and more all land in one Correspondence queue — with AI suggesting replies your team approves.",
+      hashtags: "customersupport, cx, broadcasthub",
+      status: "scheduled",
+      scheduledAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await db.socialPost.create({
+    data: {
+      organizationId: org.id,
+      platform: "instagram",
+      content: "Draft: New product spotlight coming next week 👀",
+      hashtags: "",
+      status: "draft",
     },
   });
 

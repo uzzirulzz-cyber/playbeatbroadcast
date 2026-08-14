@@ -10,6 +10,7 @@ import {
   Workflow,
   FileText,
   Radio,
+  Share2,
   Sparkles,
   Bell,
   BarChart3,
@@ -49,6 +50,7 @@ const NAV: NavGroup[] = [
       { id: "automations", label: "Automations", icon: Workflow },
       { id: "templates", label: "Templates", icon: FileText },
       { id: "channels", label: "Channels", icon: Radio },
+      { id: "social", label: "Social Media", icon: Share2 },
     ],
   },
   {

@@ -11,6 +11,7 @@ import { CorrespondenceSection } from "@/components/sections/correspondence";
 import { AutomationsSection } from "@/components/sections/automations";
 import { TemplatesSection } from "@/components/sections/templates";
 import { ChannelsSection } from "@/components/sections/channels";
+import { SocialSection } from "@/components/sections/social";
 import { AiAssistantSection } from "@/components/sections/ai-assistant";
 import { AiCampaignWriterSection } from "@/components/sections/ai-campaign-writer";
 import { AiMessageGeneratorSection } from "@/components/sections/ai-message-generator";
@@ -78,6 +79,8 @@ function renderSection(section: string) {
       return <TemplatesSection />;
     case "channels":
       return <ChannelsSection />;
+    case "social":
+      return <SocialSection />;
     case "ai-assistant":
       return <AiAssistantSection />;
     case "ai-campaign-writer":

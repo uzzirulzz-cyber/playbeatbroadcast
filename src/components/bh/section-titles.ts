@@ -9,6 +9,7 @@ export const SECTION_TITLES: Record<SectionId, string> = {
   automations: "Automations",
   templates: "Templates",
   channels: "Channels",
+  social: "Social Media",
   "ai-assistant": "AI Assistant",
   "ai-campaign-writer": "AI Campaign Writer",
   "ai-message-generator": "AI Message Generator",

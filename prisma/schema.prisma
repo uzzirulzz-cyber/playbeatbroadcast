@@ -39,6 +39,7 @@ model Organization {
   kbChunks      KBChunk[]
   intents       MessageIntent[]
   apiKeys       ApiKey[]
+  socialPosts   SocialPost[]
 }
 
 model User {
@@ -250,7 +251,7 @@ model Template {
 model Channel {
   id             String   @id @default(cuid())
   organizationId String
-  type           String   // whatsapp | telegram | sms | email
+  type           String   // whatsapp | telegram | sms | email | facebook | instagram | tiktok
   name           String
   config         String   @default("{}") // JSON, credentials never logged
   enabled        Boolean  @default(false)
@@ -417,4 +418,40 @@ model KBChunk {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([documentId])
+}
+
+// ---------------------------------------------------------------------------
+// Social Media (Facebook / Instagram / TikTok)
+// ---------------------------------------------------------------------------
+
+/// A social media post — draft, scheduled, published or failed.
+/// Stores per-post metrics returned by the platform (likes, comments, shares, views).
+model SocialPost {
+  id             String   @id @default(cuid())
+  organizationId String
+  platform       String   // facebook | instagram | tiktok
+  content        String
+  hashtags       String   @default("") // comma-separated
+  mediaUrls      String   @default("[]") // JSON string array
+  link           String?
+  status         String   @default("draft") // draft | scheduled | publishing | published | failed
+  scheduledAt    DateTime?
+  publishedAt    DateTime?
+  postId         String?  // platform-native post id once published
+  error          String?
+  // Metrics (populated after publishing)
+  likes          Int      @default(0)
+  comments       Int      @default(0)
+  shares         Int      @default(0)
+  views          Int      @default(0)
+  reach          Int      @default(0)
+  aiGenerated    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([platform])
+  @@index([status])
 }
