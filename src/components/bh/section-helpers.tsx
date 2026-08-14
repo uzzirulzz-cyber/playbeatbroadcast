@@ -15,16 +15,16 @@ export function SectionHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
       <div>
-        <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-1.5">
+        <div className="bh-eyebrow text-primary mb-2">
           BroadcastHub
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-fraunces)" }}>
+        <h2 className="text-2xl sm:text-3xl font-medium tracking-tight" style={{ fontFamily: "var(--font-fraunces)" }}>
           {title}
         </h2>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
             {description}
           </p>
         )}
@@ -52,9 +52,9 @@ export function StatCard({
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">{label}</div>
-            <div className="text-2xl font-bold mt-1.5" style={{ fontFamily: "var(--font-fraunces)" }}>{value}</div>
-            {hint && <div className="text-xs text-muted-foreground mt-1">{hint}</div>}
+            <div className="bh-eyebrow text-muted-foreground">{label}</div>
+            <div className="text-2xl font-medium mt-2" style={{ fontFamily: "var(--font-fraunces)" }}>{value}</div>
+            {hint && <div className="text-xs text-muted-foreground mt-1.5">{hint}</div>}
           </div>
           {icon && (
             <div

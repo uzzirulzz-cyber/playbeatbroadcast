@@ -25,23 +25,23 @@ export function DashboardSection() {
     <div className="space-y-6">
       {/* Hero — travel-magazine editorial header */}
       <Card className="bh-hero-gradient border-border overflow-hidden">
-        <CardContent className="p-6 sm:p-8 relative">
-          <div className="flex flex-col lg:flex-row lg:items-end gap-4 justify-between">
-            <div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">
+        <CardContent className="p-6 sm:p-10 relative">
+          <div className="flex flex-col lg:flex-row lg:items-end gap-6 justify-between">
+            <div className="max-w-2xl">
+              <div className="bh-eyebrow text-primary mb-3">
                 Omnichannel · AI · Broadcasting
               </div>
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <h2 className="text-3xl sm:text-4xl font-bold" style={{ fontFamily: "var(--font-fraunces)" }}>
-                  Welcome back, <span className="italic text-primary">Sara</span>
-                </h2>
+              <h2 className="text-4xl sm:text-5xl font-medium leading-[1.05] mb-3" style={{ fontFamily: "var(--font-fraunces)" }}>
+                Welcome back, <span className="italic text-primary">Sara</span>
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                Your AI-powered omnichannel communication platform. {m.activeCampaigns} active campaign{m.activeCampaigns !== 1 ? "s" : ""}, {m.openConversations} open conversation{m.openConversations !== 1 ? "s" : ""}, and {data.metrics.socialPostsPublished} social posts published across {data.metrics.socialChannelsConnected} platforms.
+              </p>
+              <div className="mt-4">
                 <AiStatusInline />
               </div>
-              <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
-                Your AI-powered omnichannel communication platform. {m.activeCampaigns} active campaign{m.activeCampaigns !== 1 ? "s" : ""}, {m.openConversations} open conversation{m.openConversations !== 1 ? "s" : ""}, and {data.metrics.socialPostsPublished} social posts published.
-              </p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 shrink-0">
               <Button onClick={() => setSection("ai-campaign-writer")} variant="outline" className="border-ai/40 text-ai hover:bg-ai/10 bh-pill">
                 <Sparkles className="h-3.5 w-3.5" /> AI Campaign Writer
               </Button>
@@ -67,11 +67,14 @@ export function DashboardSection() {
         <StatCard label="AI Features" value={data.automations.filter((a) => a.useAi).length} hint="AI-assisted automations" icon={<Sparkles className="h-4 w-4" />} tone="ai" />
       </div>
 
-      {/* AI Quick Actions */}
-      <Card className="border-ai/20">
+      {/* AI Quick Actions — deep green inverted block, premium editorial */}
+      <Card className="bh-green-block border-border overflow-hidden">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2"><Sparkles className="h-4 w-4 text-ai" /> AI Quick Actions</CardTitle>
-          <CardDescription>Jump straight into AI-powered workflows.</CardDescription>
+          <div className="bh-eyebrow opacity-80 mb-1">AI Assistant</div>
+          <CardTitle className="text-xl flex items-center gap-2" style={{ fontFamily: "var(--font-fraunces)" }}>
+            <Sparkles className="h-4 w-4" /> Quick Actions
+          </CardTitle>
+          <CardDescription className="opacity-80">Jump straight into AI-powered workflows.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -147,13 +150,13 @@ export function DashboardSection() {
 
 function QuickAction({ icon, label, desc, onClick }: { icon: React.ReactNode; label: string; desc: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex items-start gap-3 rounded-lg border p-3 text-left hover:border-ai/40 hover:bg-ai/5 transition-colors group">
-      <div className="h-8 w-8 rounded-md bg-ai/10 text-ai flex items-center justify-center shrink-0 group-hover:bg-ai group-hover:text-ai-foreground transition-colors">
+    <button onClick={onClick} className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-3 text-left hover:bg-white/10 hover:border-white/30 transition-colors group">
+      <div className="h-8 w-8 rounded-md bg-ai/20 text-ai flex items-center justify-center shrink-0 group-hover:bg-ai group-hover:text-ai-foreground transition-colors">
         {icon}
       </div>
       <div className="min-w-0">
-        <div className="text-sm font-medium">{label}</div>
-        <div className="text-xs text-muted-foreground truncate">{desc}</div>
+        <div className="text-sm font-medium" style={{ fontFamily: "var(--font-geist-sans)" }}>{label}</div>
+        <div className="text-xs opacity-70 truncate">{desc}</div>
       </div>
     </button>
   );
