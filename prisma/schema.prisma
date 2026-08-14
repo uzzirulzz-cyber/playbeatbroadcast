@@ -1,0 +1,420 @@
+// BroadcastHub - AI-powered omnichannel communication platform
+// Prisma schema (SQLite)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Core: Organization, Users, Team
+// ---------------------------------------------------------------------------
+
+model Organization {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  users         User[]
+  contacts      Contact[]
+  segments      Segment[]
+  campaigns     Campaign[]
+  conversations Conversation[]
+  templates     Template[]
+  channels      Channel[]
+  automations   Automation[]
+  notifications Notification[]
+  teamMembers   TeamMember[]
+  webhooks      Webhook[]
+  aiRequests    AIRequest[]
+  aiSettings    AISetting?
+  aiAgent       AICustomerSupportAgent?
+  kbDocuments   KBDocument[]
+  kbChunks      KBChunk[]
+  intents       MessageIntent[]
+  apiKeys       ApiKey[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  passwordHash   String?
+  role           String   @default("admin") // admin | agent | viewer
+  organizationId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiRequests     AIRequest[]
+  notifications  Notification[]
+  teamMember     TeamMember?
+}
+
+model TeamMember {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String   @unique
+  role           String   @default("agent") // owner | admin | agent | viewer
+  department     String?  // sales | support | marketing
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+}
+
+// ---------------------------------------------------------------------------
+// Contacts & Segments
+// ---------------------------------------------------------------------------
+
+model Contact {
+  id             String   @id @default(cuid())
+  organizationId String
+  firstName      String?
+  lastName       String?
+  email          String?
+  phone          String?
+  whatsapp       String?
+  telegram       String?
+  tags           String   @default("") // comma-separated
+  product        String?  // last interested product
+  status         String   @default("active") // active | unsubscribed | bounced
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  segmentMembers SegmentMember[]
+  messages       ConversationMessage[]
+  conversations  Conversation[]
+
+  @@index([organizationId])
+}
+
+model Segment {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  rules          String   @default("{}") // JSON rules
+  createdAt      DateTime @default(now())
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  members        SegmentMember[]
+  campaigns      Campaign[]
+}
+
+model SegmentMember {
+  id         String   @id @default(cuid())
+  segmentId  String
+  contactId  String
+  addedAt    DateTime @default(now())
+
+  segment    Segment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  contact    Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([segmentId, contactId])
+}
+
+// ---------------------------------------------------------------------------
+// Campaigns
+// ---------------------------------------------------------------------------
+
+model Campaign {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  channel        String   // whatsapp | telegram | sms | email
+  status         String   @default("draft") // draft | scheduled | active | completed | paused
+  goal           String?
+  tone           String?
+  language       String   @default("English")
+  messageBody    String?
+  callToAction   String?
+  audienceDescription String?
+  suggestedTiming String?
+  subjectLine    String?
+  abVariants     String   @default("[]") // JSON array of {label, body}
+  selectedVariant String? // "A" | "B" | "C"
+  segmentId      String?
+  scheduledAt    DateTime?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  repliedCount   Int      @default(0)
+  failedCount    Int      @default(0)
+  analysis       String?  // JSON AI analysis
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  segment        Segment?      @relation(fields: [segmentId], references: [id])
+  messages       CampaignMessage[]
+
+  @@index([organizationId])
+}
+
+model CampaignMessage {
+  id          String   @id @default(cuid())
+  campaignId  String
+  contactId   String?
+  toAddress   String
+  body        String
+  status      String   @default("queued") // queued | sent | delivered | failed
+  sentAt      DateTime?
+
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Conversations / Correspondence
+// ---------------------------------------------------------------------------
+
+model Conversation {
+  id             String   @id @default(cuid())
+  organizationId String
+  contactId      String?
+  channel        String
+  status         String   @default("open") // open | pending | closed
+  priority       String   @default("normal") // low | normal | high | urgent
+  assignedTo     String?  // team member id or "ai"
+  summary        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact        Contact?             @relation(fields: [contactId], references: [id])
+  messages       ConversationMessage[]
+
+  @@index([organizationId])
+}
+
+model ConversationMessage {
+  id              String   @id @default(cuid())
+  conversationId  String
+  contactId       String?
+  direction       String   // inbound | outbound
+  channel         String
+  body            String
+  senderName      String?
+  aiSuggested     Boolean  @default(false)
+  approvedByHuman Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact         Contact?     @relation(fields: [contactId], references: [id])
+
+  @@index([conversationId])
+}
+
+model MessageIntent {
+  id             String   @id @default(cuid())
+  organizationId String
+  conversationMessageId String?
+  intent         String
+  confidence     Float    @default(0)
+  sentiment      String?  // positive | neutral | negative | urgent
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Templates, Channels, Automations
+// ---------------------------------------------------------------------------
+
+model Template {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  channel        String
+  body           String
+  category       String?
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Channel {
+  id             String   @id @default(cuid())
+  organizationId String
+  type           String   // whatsapp | telegram | sms | email
+  name           String
+  config         String   @default("{}") // JSON, credentials never logged
+  enabled        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Automation {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  trigger        String   // new_reply | intent_detected | sentiment_negative | ...
+  conditions     String   @default("[]") // JSON
+  actions        String   @default("[]") // JSON
+  useAi          Boolean  @default(false)
+  enabled        Boolean  @default(true)
+  auditLog       String   @default("[]") // JSON
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String?
+  type           String
+  title          String
+  body           String
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Webhook {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  url            String
+  events         String   @default("[]") // JSON array
+  secret         String?
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model ApiKey {
+  id             String   @id @default(cuid())
+  organizationId String
+  label          String
+  keyPrefix      String
+  hashedKey      String
+  lastUsedAt     DateTime?
+  createdAt      DateTime @default(now())
+  revokedAt      DateTime?
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// AI Layer
+// ---------------------------------------------------------------------------
+
+/// AI request log (per spec #95). Does NOT store sensitive prompts/responses
+/// indefinitely by default - only metadata + a short hashed fingerprint.
+model AIRequest {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String?
+  feature        String   // campaign | rewrite | translate | reply | summary | intent | sentiment | analysis | subject | abtest | image_prompt | kb_answer | embed
+  provider       String   @default("openai") // openai | demo
+  model          String?
+  inputTokens    Int      @default(0)
+  outputTokens   Int      @default(0)
+  status         String   @default("ok") // ok | error | disabled
+  latency        Int      @default(0) // ms
+  errorMessage   String?
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([feature])
+  @@index([createdAt])
+}
+
+/// Organization-level AI settings (spec #91, #96)
+model AISetting {
+  id                 String   @id @default(cuid())
+  organizationId     String   @unique
+  enabled            Boolean  @default(false)
+  provider           String   @default("openai") // openai | demo
+  model              String   @default("gpt-4o-mini")
+  embeddingModel     String   @default("text-embedding-3-small")
+  temperature        Float    @default(0.7)
+  maxOutput          Int      @default(1024)
+  replySuggestions   Boolean  @default(true)
+  summaries          Boolean  @default(true)
+  translation        Boolean  @default(true)
+  classification     Boolean  @default(true)
+  customerSupport    Boolean  @default(false)
+  campaignGeneration Boolean  @default(true)
+  // Privacy (spec #96)
+  sendContactFields  Boolean  @default(true) // allow sending approved contact fields
+  sendConversation   Boolean  @default(true)
+  retentionDays      Int      @default(30)
+  // Human approval (spec #97)
+  humanApprovalRequired Boolean @default(true)
+  autoRespond         Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+/// AI customer support agent config (spec #84)
+model AICustomerSupportAgent {
+  id                String   @id @default(cuid())
+  organizationId    String   @unique
+  agentName         String   @default("Aria")
+  personality       String   @default("Helpful, friendly and concise.")
+  language          String   @default("English")
+  businessDescription String?
+  workingHours      String   @default("09:00-18:00")
+  fallbackMessage   String   @default("I'll connect you with a member of our team.")
+  enabled           Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+/// Knowledge Base documents (spec #85)
+model KBDocument {
+  id             String   @id @default(cuid())
+  organizationId String
+  title          String
+  sourceType     String   // pdf | txt | docx | csv | faq | website
+  content        String   // extracted text
+  meta           String   @default("{}") // JSON
+  status         String   @default("ready") // processing | ready | failed
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  chunks         KBChunk[]
+}
+
+model KBChunk {
+  id          String   @id @default(cuid())
+  documentId  String
+  organizationId String
+  text        String
+  embedding   String   @default("[]") // JSON float array (SQLite has no vector type)
+  chunkIndex  Int
+  createdAt   DateTime @default(now())
+
+  document    KBDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+}

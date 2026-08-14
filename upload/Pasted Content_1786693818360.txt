@@ -1,0 +1,2470 @@
+# MASTER BUILD PROMPT
+
+## Free Omnichannel WhatsApp + Telegram + SMS + Email Broadcasting Platform
+
+Build a complete, production-ready, modern web application for omnichannel customer communication and broadcasting.
+
+The application must allow users and organizations to manage contacts, create campaigns, broadcast messages through WhatsApp, Telegram and SMS, manage correspondence, receive replies, schedule campaigns, configure notifications, send email notifications, view analytics, create automations, and manage everything from a professional dashboard.
+
+The application should be designed as a **free/open-source/self-hostable platform**.
+
+The software itself must not charge users. However, the application must support official third-party communication APIs where the underlying provider may charge for WhatsApp, SMS, email, hosting, etc.
+
+Do NOT implement unofficial WhatsApp Web automation, WhatsApp account scraping, QR-session abuse, spam evasion, or methods designed to bypass Meta/Telegram/SMS provider restrictions.
+
+Use official APIs and provider integrations.
+
+---
+
+# 1. PRODUCT NAME
+
+Use a configurable product name.
+
+Default:
+
+**BroadcastHub**
+
+Allow the administrator to change:
+
+* Application name
+* Logo
+* Favicon
+* Primary color
+* Secondary color
+* Support email
+* Company name
+* Footer text
+
+The platform should be white-label ready.
+
+---
+
+# 2. CORE OBJECTIVE
+
+The platform must provide:
+
+1. User registration
+2. Email verification
+3. Login/logout
+4. Password reset
+5. Optional 2FA
+6. Organization/workspace
+7. Team members
+8. Role-based permissions
+9. Contact management
+10. Contact import/export
+11. Contact segmentation
+12. Tags
+13. Custom fields
+14. WhatsApp integration
+15. Telegram integration
+16. SMS integration
+17. Email integration
+18. Campaign creation
+19. Campaign scheduling
+20. Campaign activation
+21. Campaign pause/cancel
+22. Message queue
+23. Delivery tracking
+24. Unified correspondence inbox
+25. Incoming replies
+26. Notifications
+27. Email notifications
+28. Browser notifications
+29. Automation workflows
+30. Templates
+31. Analytics
+32. Reports
+33. Audit logs
+34. API keys
+35. Webhooks
+36. Admin panel
+37. System settings
+38. Compliance/opt-out management
+
+---
+
+# 3. DESIGN
+
+Create a professional SaaS dashboard.
+
+Design characteristics:
+
+* Modern
+* Clean
+* Responsive
+* Desktop-first but mobile-friendly
+* Fast
+* Professional
+* Dark mode
+* Light mode
+* Accessible
+* Minimal unnecessary animations
+* Clear status indicators
+* Excellent empty states
+* Toast notifications
+* Modal dialogs
+* Confirmation dialogs
+* Skeleton loaders
+* Error states
+* Loading states
+
+Use a modern dashboard layout:
+
+```text
+┌───────────────────────────────────────────────────────────┐
+│ LOGO       Search                 Notifications   User    │
+├───────────────┬───────────────────────────────────────────┤
+│               │                                           │
+│ Dashboard     │                                           │
+│ Contacts      │                                           │
+│ Campaigns     │             MAIN CONTENT                  │
+│ Correspondence│                                           │
+│ Automations   │                                           │
+│ Templates     │                                           │
+│ Channels      │                                           │
+│ Reports       │                                           │
+│ Notifications │                                           │
+│ Settings      │                                           │
+│               │                                           │
+└───────────────┴───────────────────────────────────────────┘
+```
+
+---
+
+# 4. TECHNOLOGY STACK
+
+Use:
+
+Frontend:
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Lucide icons
+
+Backend:
+
+* Node.js
+* TypeScript
+* Next.js API routes or NestJS
+
+Database:
+
+* PostgreSQL
+* Prisma ORM
+
+Queue:
+
+* Redis
+* BullMQ
+
+Authentication:
+
+* Auth.js or secure custom authentication
+
+Storage:
+
+* S3-compatible storage
+
+Realtime:
+
+* WebSockets or Server-Sent Events
+
+Email:
+
+* SMTP abstraction
+* Support providers such as Resend, SendGrid, Mailgun, SMTP
+
+Deployment:
+
+* Docker
+* Docker Compose
+
+Make every external service configurable through environment variables.
+
+---
+
+# 5. PROJECT STRUCTURE
+
+Create a clean architecture.
+
+Example:
+
+```text
+/broadcasthub
+  /app
+  /components
+  /lib
+  /server
+  /services
+  /workers
+  /prisma
+  /emails
+  /public
+  /hooks
+  /types
+  /config
+  /scripts
+  /tests
+  /docs
+  .env.example
+  docker-compose.yml
+  Dockerfile
+  README.md
+```
+
+Separate:
+
+* UI
+* Business logic
+* API
+* Database
+* Messaging providers
+* Queue workers
+* Notifications
+* Authentication
+* Analytics
+
+Do not place all business logic inside frontend components.
+
+---
+
+# 6. AUTHENTICATION
+
+Create:
+
+## Registration
+
+Fields:
+
+* Name
+* Email
+* Password
+* Confirm password
+* Organization name
+* Phone number
+* Country
+* Time zone
+* Terms acceptance
+
+After registration:
+
+```text
+Register
+↓
+Create user
+↓
+Create organization
+↓
+Create owner role
+↓
+Send verification email
+↓
+Verify email
+↓
+Onboarding
+↓
+Dashboard
+```
+
+## Login
+
+Support:
+
+* Email/password
+* Remember session
+* Forgot password
+* Reset password
+* Optional 2FA
+
+## Security
+
+Implement:
+
+* Password hashing
+* Secure cookies
+* CSRF protection where applicable
+* Rate limiting
+* Login attempt protection
+* Session invalidation
+* Password reset tokens
+* Email verification tokens
+
+---
+
+# 7. ORGANIZATION / MULTI-TENANCY
+
+The platform must support multiple organizations.
+
+Each organization must have isolated:
+
+* Contacts
+* Campaigns
+* Messages
+* Channels
+* Templates
+* Automations
+* Reports
+* API keys
+* Team members
+
+Never allow one organization to access another organization's data.
+
+Database queries must always enforce organization ownership.
+
+---
+
+# 8. TEAM MANAGEMENT
+
+Roles:
+
+### Owner
+
+Full access.
+
+### Admin
+
+Manage:
+
+* Contacts
+* Campaigns
+* Channels
+* Automations
+* Reports
+* Team members
+
+### Manager
+
+Manage:
+
+* Campaigns
+* Contacts
+* Correspondence
+* Reports
+
+### Agent
+
+Manage:
+
+* Correspondence
+* Contacts
+* Replies
+
+### Viewer
+
+Read-only access.
+
+Allow custom permissions later.
+
+---
+
+# 9. ONBOARDING
+
+After email verification show:
+
+```text
+Welcome to BroadcastHub
+
+Step 1
+Business Information
+
+Step 2
+Connect a Channel
+
+Step 3
+Import Contacts
+
+Step 4
+Create Your First Campaign
+```
+
+Allow user to skip any step and complete later.
+
+---
+
+# 10. DASHBOARD
+
+Create dashboard cards:
+
+```text
+Total Contacts
+Active Campaigns
+Messages Sent
+Messages Delivered
+Messages Failed
+Replies
+Scheduled Campaigns
+Unsubscribed
+```
+
+Charts:
+
+* Messages by day
+* Delivery rate
+* Failure rate
+* Reply rate
+* Channel distribution
+* Campaign performance
+
+Recent activity:
+
+```text
+Campaign activated
+Campaign completed
+New reply
+Contact imported
+WhatsApp connected
+SMS connection failed
+```
+
+---
+
+# 11. CONTACT MANAGEMENT
+
+Create complete CRM-style contact management.
+
+Contact fields:
+
+```text
+ID
+First Name
+Last Name
+Phone
+Email
+WhatsApp Number
+Telegram ID
+Country
+Language
+Company
+Tags
+Status
+Consent Status
+Created At
+Updated At
+Custom Fields
+```
+
+Contact statuses:
+
+* Active
+* Unsubscribed
+* Blocked
+* Invalid
+
+Features:
+
+* Add contact
+* Edit contact
+* Delete contact
+* Search
+* Filter
+* Sort
+* Bulk select
+* Bulk tag
+* Bulk delete
+* Export
+* Import
+* Duplicate detection
+
+---
+
+# 12. CONTACT PROFILE
+
+Create a detailed contact page.
+
+Show:
+
+```text
+Contact Information
+
+Name
+Phone
+Email
+WhatsApp
+Telegram
+Tags
+
+Communication Status
+
+WhatsApp ✓
+Telegram ✓
+SMS ✓
+Email ✓
+
+Timeline
+
+Contact created
+Campaign received
+Message delivered
+Reply received
+Agent responded
+Unsubscribed
+```
+
+Show complete correspondence history.
+
+---
+
+# 13. CSV IMPORT
+
+Create a professional CSV import wizard.
+
+Flow:
+
+```text
+Upload CSV
+↓
+Analyze file
+↓
+Map columns
+↓
+Validate records
+↓
+Detect duplicates
+↓
+Detect invalid data
+↓
+Preview
+↓
+Import
+```
+
+Show:
+
+```text
+Total rows: 10,000
+Valid: 9,742
+Duplicates: 183
+Invalid: 75
+```
+
+Allow:
+
+* Skip duplicates
+* Update existing contacts
+* Create new contacts
+* Add tags during import
+
+Send completion notification.
+
+---
+
+# 14. SEGMENTS
+
+Create dynamic and static segments.
+
+Examples:
+
+```text
+All Customers
+
+Pakistan Customers
+
+VIP Customers
+
+WhatsApp Contacts
+
+Customers Added This Month
+
+Customers Who Replied
+
+Customers Who Did Not Reply
+```
+
+Filters:
+
+* Country
+* Tag
+* Contact status
+* Created date
+* Last message
+* Last reply
+* Campaign participation
+* Channel availability
+* Custom fields
+
+---
+
+# 15. CHANNELS
+
+Create:
+
+```text
+Channels
+
+WhatsApp
+Telegram
+SMS
+Email
+```
+
+Each channel gets:
+
+* Connection
+* Status
+* Configuration
+* Test
+* Logs
+* Disconnect
+
+---
+
+# 16. WHATSAPP
+
+Use the official WhatsApp Business/Cloud API.
+
+Do not implement unofficial WhatsApp Web automation.
+
+Support:
+
+* Connect WhatsApp Business
+* Configure credentials
+* Phone number
+* Business account
+* Templates
+* Webhooks
+* Incoming messages
+* Delivery status
+* Read status
+* Failed status
+* Media messages
+
+WhatsApp status:
+
+```text
+Connected
+Disconnected
+Error
+Needs Attention
+```
+
+Provide a test message function.
+
+Store:
+
+* Message ID
+* Provider ID
+* Status
+* Timestamp
+* Error code
+* Error message
+
+---
+
+# 17. TELEGRAM
+
+Use official Telegram Bot API.
+
+Allow user to:
+
+* Add bot token
+* Verify token
+* Connect bot
+* Receive webhook updates
+* Send messages
+* Receive replies
+* Send media
+* Send buttons
+* Track message status where supported
+
+Do not scrape Telegram users.
+
+Only communicate with users that can legitimately receive messages through the connected bot/account.
+
+---
+
+# 18. SMS
+
+Create provider abstraction.
+
+Interface:
+
+```typescript
+interface SmsProvider {
+  sendMessage()
+  getStatus()
+  validateNumber()
+}
+```
+
+Allow providers to be added later.
+
+Initial configuration:
+
+* Provider name
+* API key
+* API secret
+* Sender ID
+* Country
+* Test message
+
+Track:
+
+* Sent
+* Delivered
+* Failed
+* Rejected
+
+---
+
+# 19. EMAIL
+
+Create email provider abstraction.
+
+Support:
+
+* SMTP
+* Resend
+* SendGrid
+* Mailgun
+
+Email can be used for:
+
+1. Account emails
+2. Notifications
+3. Campaign messages
+
+Store:
+
+* From
+* To
+* Subject
+* Body
+* Provider ID
+* Status
+* Error
+
+---
+
+# 20. MESSAGE COMPOSER
+
+Create a universal message composer.
+
+Fields:
+
+```text
+Channel
+
+Audience
+
+Message
+
+Attachments
+
+Variables
+
+Tracking
+
+Schedule
+```
+
+Variables:
+
+```text
+{{first_name}}
+{{last_name}}
+{{phone}}
+{{email}}
+{{company}}
+```
+
+Show variable preview using actual contact data.
+
+---
+
+# 21. CAMPAIGN CREATOR
+
+Create a multi-step wizard.
+
+## Step 1
+
+Campaign name.
+
+## Step 2
+
+Select channel.
+
+## Step 3
+
+Select audience.
+
+## Step 4
+
+Create message.
+
+## Step 5
+
+Attachments.
+
+## Step 6
+
+Preview.
+
+## Step 7
+
+Schedule.
+
+## Step 8
+
+Final validation.
+
+---
+
+# 22. CAMPAIGN STATES
+
+Implement:
+
+```text
+DRAFT
+SCHEDULED
+QUEUED
+RUNNING
+PAUSED
+COMPLETED
+CANCELLED
+FAILED
+```
+
+Campaign lifecycle:
+
+```text
+Draft
+↓
+Validate
+↓
+Schedule / Activate
+↓
+Queued
+↓
+Running
+↓
+Completed
+```
+
+Allow pause/resume where technically possible.
+
+---
+
+# 23. CAMPAIGN ACTIVATION
+
+Before activation display:
+
+```text
+Campaign Review
+
+Campaign:
+Weekend Sale
+
+Audience:
+8,450 contacts
+
+Channels:
+WhatsApp 5,000
+Telegram 2,000
+SMS 1,450
+
+Message:
+Hello {{first_name}}...
+
+Validation:
+✓ Audience valid
+✓ Message valid
+✓ Channel connected
+✓ Sender configured
+✓ Suppression list applied
+```
+
+Button:
+
+```text
+ACTIVATE CAMPAIGN
+```
+
+Require confirmation.
+
+---
+
+# 24. MESSAGE QUEUE
+
+Never send thousands of messages directly from the HTTP request.
+
+Use:
+
+```text
+Campaign
+↓
+Message generation
+↓
+Queue
+↓
+Worker
+↓
+Provider
+↓
+Webhook
+↓
+Database
+↓
+Realtime update
+```
+
+Use Redis/BullMQ.
+
+Implement:
+
+* Retry
+* Backoff
+* Rate limiting
+* Dead-letter queue
+* Error logging
+* Idempotency
+
+Do not bypass provider rate limits.
+
+---
+
+# 25. MESSAGE DATABASE
+
+Create message table with:
+
+```text
+id
+organization_id
+campaign_id
+contact_id
+channel
+provider
+provider_message_id
+direction
+content
+media_url
+status
+error_code
+error_message
+sent_at
+delivered_at
+read_at
+failed_at
+created_at
+updated_at
+```
+
+Statuses:
+
+```text
+QUEUED
+SENDING
+SENT
+DELIVERED
+READ
+FAILED
+CANCELLED
+```
+
+---
+
+# 26. CORRESPONDENCE
+
+Create unified inbox.
+
+Tabs:
+
+```text
+All
+WhatsApp
+Telegram
+SMS
+Email
+Unread
+Assigned to Me
+```
+
+Conversation list:
+
+```text
+John Smith
+WhatsApp
+Unread
+
+Sarah Khan
+Telegram
+2 unread
+
+Ahmed Ali
+SMS
+```
+
+Conversation screen:
+
+```text
+Contact
+Campaign
+Channel
+
+Message history
+
+[Write reply...................]
+
+Attachment
+Template
+Send
+```
+
+---
+
+# 27. AGENT ASSIGNMENT
+
+Allow conversations to be assigned.
+
+```text
+Conversation
+↓
+Assign
+↓
+Agent
+```
+
+Agent receives notification.
+
+Statuses:
+
+* Open
+* Pending
+* Resolved
+* Closed
+
+---
+
+# 28. AUTOMATION ENGINE
+
+Create visual workflow builder.
+
+Example:
+
+```text
+TRIGGER
+New Contact
+
+↓
+ACTION
+Send WhatsApp
+
+↓
+WAIT
+24 hours
+
+↓
+CONDITION
+Did contact reply?
+
+YES → Stop
+
+NO → Send Email
+
+↓
+WAIT
+48 hours
+
+↓
+Send SMS
+```
+
+Supported triggers:
+
+* Contact created
+* Contact tagged
+* Campaign completed
+* Message delivered
+* Message failed
+* Reply received
+* Scheduled date
+* Segment membership
+
+Actions:
+
+* Send WhatsApp
+* Send Telegram
+* Send SMS
+* Send Email
+* Add tag
+* Remove tag
+* Assign agent
+* Wait
+* Condition
+* Webhook
+* Update contact
+
+---
+
+# 29. TEMPLATES
+
+Create template management.
+
+Categories:
+
+* WhatsApp
+* Telegram
+* SMS
+* Email
+
+Fields:
+
+```text
+Template Name
+Channel
+Subject
+Message
+Variables
+Media
+Status
+```
+
+Allow:
+
+* Create
+* Edit
+* Duplicate
+* Delete
+* Search
+* Preview
+
+For WhatsApp, respect Meta's template requirements and approval process.
+
+---
+
+# 30. NOTIFICATION CENTER
+
+Create notification bell.
+
+Notification types:
+
+```text
+Campaign Started
+Campaign Completed
+Campaign Failed
+Campaign Scheduled
+New Reply
+Channel Connected
+Channel Disconnected
+Contact Import Completed
+Automation Triggered
+System Alert
+Security Alert
+```
+
+Each notification:
+
+```text
+id
+user_id
+organization_id
+type
+title
+message
+read
+created_at
+```
+
+---
+
+# 31. EMAIL NOTIFICATIONS
+
+Create an email notification service.
+
+Emails:
+
+### Account
+
+* Welcome
+* Verify email
+* Password reset
+* Password changed
+* New login
+
+### Campaign
+
+* Campaign scheduled
+* Campaign started
+* Campaign completed
+* Campaign failed
+
+### Contacts
+
+* Import started
+* Import completed
+* Import failed
+
+### Channels
+
+* Connected
+* Disconnected
+* Authentication error
+
+### Correspondence
+
+* New reply
+* Conversation assigned
+
+### Reports
+
+* Daily summary
+* Weekly report
+
+Allow users to enable/disable notification categories.
+
+---
+
+# 32. EMAIL TEMPLATE SYSTEM
+
+Create reusable email templates.
+
+Example:
+
+```text
+{{user_name}}
+{{organization_name}}
+{{campaign_name}}
+{{campaign_status}}
+{{dashboard_url}}
+```
+
+Create responsive HTML emails.
+
+Do not hardcode branding.
+
+---
+
+# 33. BROWSER PUSH
+
+Implement optional browser notifications.
+
+Ask for permission.
+
+Notify:
+
+```text
+Campaign completed
+New customer reply
+Channel disconnected
+Campaign failed
+```
+
+---
+
+# 34. REALTIME SYSTEM
+
+Use WebSockets or SSE.
+
+Realtime events:
+
+```text
+message.sent
+message.delivered
+message.failed
+message.read
+message.received
+campaign.started
+campaign.progress
+campaign.completed
+notification.created
+channel.status_changed
+```
+
+Dashboard should update without page refresh.
+
+---
+
+# 35. ANALYTICS
+
+Campaign report:
+
+```text
+Recipients
+Sent
+Delivered
+Read
+Failed
+Replies
+Opt-outs
+```
+
+Calculate:
+
+```text
+Delivery Rate
+Failure Rate
+Reply Rate
+Opt-out Rate
+```
+
+Charts:
+
+* Messages over time
+* Channel performance
+* Campaign performance
+* Delivery performance
+
+---
+
+# 36. REPORTS
+
+Create report page.
+
+Filters:
+
+* Date
+* Campaign
+* Channel
+* Contact list
+* Status
+
+Export:
+
+* CSV
+* JSON
+
+Later support PDF.
+
+---
+
+# 37. AUDIT LOG
+
+Log sensitive actions:
+
+```text
+User logged in
+Campaign created
+Campaign activated
+Campaign cancelled
+Contact deleted
+Channel connected
+Channel disconnected
+API key created
+API key revoked
+Team member added
+Permission changed
+```
+
+Store:
+
+```text
+user
+organization
+action
+resource
+resource_id
+IP
+user_agent
+timestamp
+```
+
+---
+
+# 38. API
+
+Create REST API.
+
+Endpoints:
+
+```text
+/auth
+/users
+/organizations
+/contacts
+/segments
+/campaigns
+/messages
+/conversations
+/templates
+/channels
+/automations
+/notifications
+/reports
+/webhooks
+```
+
+Support API keys.
+
+Example:
+
+```text
+POST /api/v1/contacts
+POST /api/v1/campaigns
+GET /api/v1/campaigns/:id
+GET /api/v1/messages/:id
+```
+
+Generate API documentation.
+
+---
+
+# 39. WEBHOOKS
+
+Create webhook system.
+
+Inbound:
+
+```text
+WhatsApp webhook
+Telegram webhook
+SMS webhook
+Email webhook
+```
+
+Outbound:
+
+```text
+message.sent
+message.delivered
+message.failed
+message.received
+campaign.completed
+contact.created
+```
+
+Allow users to configure webhook URLs.
+
+Include:
+
+* Secret
+* Signature
+* Retry
+* Delivery logs
+
+---
+
+# 40. COMPLIANCE
+
+Build compliance into the application.
+
+Implement:
+
+* Consent status
+* Opt-out
+* Suppression list
+* STOP handling for SMS where applicable
+* Unsubscribe mechanism
+* Channel-specific restrictions
+* Rate limits
+* Abuse prevention
+* Provider policy compliance
+
+Never provide functionality designed to:
+
+* bypass WhatsApp restrictions
+* bypass Telegram restrictions
+* bypass SMS carrier restrictions
+* scrape contacts
+* send unsolicited spam
+* evade provider detection
+* circumvent account bans
+
+---
+
+# 41. SETTINGS
+
+Create:
+
+```text
+Profile
+Organization
+Team
+Security
+Notifications
+Channels
+Templates
+API Keys
+Webhooks
+Billing/Usage
+Branding
+Time Zone
+Language
+```
+
+Although the application itself is free, create an optional usage page:
+
+```text
+WhatsApp usage
+SMS usage
+Email usage
+Storage
+API requests
+```
+
+Do not implement fake credits or fake balances.
+
+---
+
+# 42. ADMIN PANEL
+
+Create `/admin`.
+
+Admin dashboard:
+
+```text
+Total Users
+Active Organizations
+Campaigns Today
+Messages Today
+Messages Failed
+Connected Channels
+System Errors
+```
+
+Admin pages:
+
+```text
+Users
+Organizations
+Campaigns
+Messages
+Channels
+Templates
+Notifications
+Email Logs
+Provider Logs
+Webhook Logs
+Audit Logs
+System Settings
+```
+
+Admin can suspend an organization.
+
+When suspended:
+
+```text
+All campaigns stop
+Scheduled campaigns stop
+API access disabled
+Channels disabled
+```
+
+Do not delete data automatically.
+
+---
+
+# 43. DATABASE
+
+Create Prisma schema with at minimum:
+
+```text
+User
+Organization
+OrganizationMember
+Role
+Contact
+ContactTag
+Tag
+Segment
+Channel
+ChannelCredential
+Campaign
+CampaignRecipient
+Message
+Conversation
+ConversationParticipant
+Template
+Automation
+AutomationStep
+AutomationExecution
+Notification
+EmailLog
+Webhook
+WebhookDelivery
+ApiKey
+AuditLog
+Suppression
+File
+```
+
+Add appropriate indexes and foreign keys.
+
+Use UUIDs.
+
+Use timestamps.
+
+Use soft deletion where appropriate.
+
+---
+
+# 44. SECURITY REQUIREMENTS
+
+Implement:
+
+* Password hashing
+* Secure sessions
+* RBAC
+* Organization isolation
+* API authentication
+* Rate limiting
+* Request validation
+* Input sanitization
+* SQL injection protection
+* XSS protection
+* CSRF protection
+* Webhook signature verification
+* Encrypted credentials
+* Secret management
+* Audit logging
+
+Never expose provider secrets to the frontend.
+
+---
+
+# 45. ERROR HANDLING
+
+Every operation must have proper:
+
+```text
+Loading
+Success
+Empty
+Error
+Retry
+```
+
+Example:
+
+```text
+Unable to connect WhatsApp.
+
+Reason:
+Authentication failed.
+
+[Retry Connection]
+```
+
+Never display raw stack traces to users.
+
+Log technical details server-side.
+
+---
+
+# 46. EMPTY STATES
+
+Create useful empty states.
+
+Example:
+
+```text
+No campaigns yet.
+
+Create your first campaign to start communicating
+with your audience.
+
+[ CREATE CAMPAIGN ]
+```
+
+---
+
+# 47. RESPONSIVE MOBILE DESIGN
+
+On mobile:
+
+* Sidebar becomes drawer
+* Tables become cards
+* Campaign builder becomes vertical
+* Inbox becomes mobile messaging UI
+* Dashboard cards stack
+* Buttons remain accessible
+
+---
+
+# 48. SEARCH
+
+Global search should search:
+
+* Contacts
+* Campaigns
+* Conversations
+* Messages
+* Templates
+
+Use keyboard shortcut:
+
+```text
+Ctrl + K
+```
+
+---
+
+# 49. DARK MODE
+
+Implement full dark mode.
+
+Store preference per user.
+
+Do not hardcode colors throughout components.
+
+Use design tokens.
+
+---
+
+# 50. INTERNATIONALIZATION
+
+Prepare architecture for:
+
+* English
+* Chinese
+* Urdu
+* Arabic
+
+Start with English.
+
+Allow RTL support for Urdu/Arabic.
+
+---
+
+# 51. TIME ZONES
+
+Every organization has a timezone.
+
+Campaign scheduling must use organization timezone.
+
+Store timestamps in UTC.
+
+Display in user's local timezone.
+
+---
+
+# 52. FILES / MEDIA
+
+Support:
+
+* Images
+* Videos
+* PDFs
+* Documents
+
+Store in object storage.
+
+Validate:
+
+* MIME type
+* File size
+* File extension
+
+Generate secure signed URLs where necessary.
+
+---
+
+# 53. TESTING
+
+Create tests for:
+
+### Authentication
+
+* Registration
+* Login
+* Verification
+* Password reset
+
+### Contacts
+
+* Create
+* Edit
+* Delete
+* Import
+* Duplicate detection
+
+### Campaigns
+
+* Create
+* Validate
+* Schedule
+* Activate
+* Pause
+* Complete
+
+### Messages
+
+* Queue
+* Send
+* Retry
+* Failure
+* Delivery update
+
+### Permissions
+
+Verify users cannot access another organization.
+
+### Webhooks
+
+Test:
+
+* Valid webhook
+* Invalid signature
+* Duplicate webhook
+* Retry
+
+---
+
+# 54. SEED DATA
+
+Create demo organization.
+
+Demo users:
+
+```text
+admin@example.com
+manager@example.com
+agent@example.com
+```
+
+Do not hardcode real passwords in production.
+
+Create:
+
+* 50 contacts
+* 5 campaigns
+* 3 templates
+* Demo conversations
+* Demo notifications
+* Demo reports
+
+Clearly mark demo data.
+
+---
+
+# 55. ENVIRONMENT VARIABLES
+
+Create `.env.example`.
+
+Include placeholders for:
+
+```text
+DATABASE_URL
+REDIS_URL
+
+NEXTAUTH_SECRET
+
+SMTP_HOST
+SMTP_PORT
+SMTP_USER
+SMTP_PASSWORD
+SMTP_FROM
+
+WHATSAPP_API_URL
+WHATSAPP_ACCESS_TOKEN
+WHATSAPP_BUSINESS_ACCOUNT_ID
+WHATSAPP_PHONE_NUMBER_ID
+WHATSAPP_VERIFY_TOKEN
+
+TELEGRAM_BOT_TOKEN
+
+SMS_PROVIDER_URL
+SMS_API_KEY
+SMS_API_SECRET
+SMS_SENDER_ID
+
+S3_ENDPOINT
+S3_ACCESS_KEY
+S3_SECRET_KEY
+S3_BUCKET
+```
+
+Never commit real credentials.
+
+---
+
+# 56. DOCKER
+
+Create:
+
+```text
+docker-compose.yml
+```
+
+Services:
+
+```text
+app
+postgres
+redis
+worker
+```
+
+Make the complete application start with:
+
+```bash
+docker compose up -d
+```
+
+---
+
+# 57. INSTALLATION
+
+README must explain:
+
+```text
+1. Clone project
+2. Copy .env.example to .env
+3. Configure database
+4. Configure Redis
+5. Configure email
+6. Configure messaging providers
+7. Run migrations
+8. Seed database
+9. Start application
+```
+
+Include commands.
+
+---
+
+# 58. DEMO MODE
+
+Add optional demo mode.
+
+Demo mode should allow users to explore:
+
+* Dashboard
+* Contacts
+* Campaigns
+* Correspondence
+* Reports
+* Automation
+
+without connecting real messaging providers.
+
+Demo messages must NEVER be sent to real users.
+
+Clearly display:
+
+```text
+DEMO MODE
+Messages are simulated.
+```
+
+---
+
+# 59. USER FLOW
+
+Implement this complete flow:
+
+```text
+LANDING PAGE
+     ↓
+SIGN UP
+     ↓
+EMAIL VERIFICATION
+     ↓
+ONBOARDING
+     ↓
+DASHBOARD
+     ↓
+CONNECT CHANNEL
+     ↓
+IMPORT CONTACTS
+     ↓
+CREATE CAMPAIGN
+     ↓
+SELECT AUDIENCE
+     ↓
+WRITE MESSAGE
+     ↓
+PREVIEW
+     ↓
+VALIDATE
+     ↓
+SCHEDULE / SEND
+     ↓
+QUEUE
+     ↓
+MESSAGING PROVIDER
+     ↓
+DELIVERY WEBHOOK
+     ↓
+DATABASE UPDATE
+     ↓
+REALTIME DASHBOARD UPDATE
+     ↓
+CAMPAIGN COMPLETE
+     ↓
+EMAIL NOTIFICATION
+     ↓
+REPORT
+```
+
+---
+
+# 60. CORRESPONDENCE FLOW
+
+```text
+Customer receives message
+        ↓
+Customer replies
+        ↓
+Provider webhook
+        ↓
+Webhook validation
+        ↓
+Message saved
+        ↓
+Conversation updated
+        ↓
+Realtime notification
+        ↓
+Agent notification
+        ↓
+Email notification if enabled
+        ↓
+Agent opens inbox
+        ↓
+Agent replies
+        ↓
+Provider
+        ↓
+Delivery update
+        ↓
+Conversation timeline updated
+```
+
+---
+
+# 61. NOTIFICATION FLOW
+
+Every important system event should go through a centralized notification service.
+
+Architecture:
+
+```text
+EVENT
+ ↓
+EVENT BUS
+ ↓
+NOTIFICATION SERVICE
+ ↓
+ ├── In-App
+ ├── Email
+ └── Browser Push
+```
+
+Do not duplicate notification logic throughout the application.
+
+---
+
+# 62. EMAIL SERVICE
+
+Create:
+
+```text
+EmailService
+```
+
+Functions:
+
+```typescript
+sendWelcomeEmail()
+sendVerificationEmail()
+sendPasswordResetEmail()
+sendCampaignStartedEmail()
+sendCampaignCompletedEmail()
+sendCampaignFailedEmail()
+sendNewReplyEmail()
+sendChannelDisconnectedEmail()
+sendImportCompletedEmail()
+sendSecurityAlertEmail()
+```
+
+Make provider interchangeable.
+
+---
+
+# 63. CAMPAIGN EVENT ENGINE
+
+Create centralized events:
+
+```text
+CAMPAIGN_CREATED
+CAMPAIGN_SCHEDULED
+CAMPAIGN_STARTED
+CAMPAIGN_PROGRESS
+CAMPAIGN_PAUSED
+CAMPAIGN_COMPLETED
+CAMPAIGN_FAILED
+```
+
+Every event can trigger:
+
+* Database update
+* Notification
+* Email
+* Analytics
+* Audit log
+
+---
+
+# 64. MESSAGE EVENT ENGINE
+
+Events:
+
+```text
+MESSAGE_CREATED
+MESSAGE_QUEUED
+MESSAGE_SENDING
+MESSAGE_SENT
+MESSAGE_DELIVERED
+MESSAGE_READ
+MESSAGE_FAILED
+MESSAGE_RECEIVED
+```
+
+Use these events throughout the platform.
+
+---
+
+# 65. USER EXPERIENCE
+
+The user should always know:
+
+* What is happening
+* What has completed
+* What failed
+* Why it failed
+* What action they can take next
+
+Never leave the user staring at a loading spinner without explanation.
+
+---
+
+# 66. LANDING PAGE
+
+Create a professional public landing page.
+
+Sections:
+
+```text
+Hero
+
+"One Platform.
+Every Conversation."
+
+Connect WhatsApp, Telegram, SMS and Email.
+
+[Get Started Free]
+[View Demo]
+
+Features
+
+Omnichannel Messaging
+Campaigns
+Automation
+Unified Inbox
+Analytics
+Team Collaboration
+
+How It Works
+
+Connect
+Import
+Broadcast
+Engage
+Analyze
+
+Security
+
+Official APIs
+Data isolation
+Role-based access
+
+CTA
+
+Start Broadcasting
+```
+
+Do not claim that WhatsApp/SMS messaging itself is free.
+
+Instead say:
+
+**"Free and open-source platform. Connect your own messaging providers."**
+
+---
+
+# 67. BILLING PAGE
+
+The software is free.
+
+Do not require payment.
+
+Create an informational usage page:
+
+```text
+Platform:
+FREE
+
+Provider Costs:
+Depends on connected provider
+
+Infrastructure:
+Your responsibility when self-hosting
+```
+
+---
+
+# 68. FINAL QUALITY REQUIREMENTS
+
+The final application must:
+
+* Compile successfully
+* Have no TypeScript errors
+* Have no broken routes
+* Have no placeholder buttons
+* Have no fake integrations presented as real
+* Have proper API error handling
+* Have proper loading states
+* Have proper empty states
+* Have responsive design
+* Have secure authentication
+* Have tenant isolation
+* Have database migrations
+* Have seed data
+* Have tests
+* Have Docker configuration
+* Have README
+* Have `.env.example`
+
+Do not create mock functionality where a real implementation is expected.
+
+If an external API cannot be configured during development, provide a clearly marked **mock/demo adapter**, while keeping the real provider interface ready.
+
+---
+
+# 69. DEVELOPMENT ORDER
+
+Build in this exact order:
+
+### Phase 1
+
+Project setup
+
+### Phase 2
+
+Database + Prisma
+
+### Phase 3
+
+Authentication
+
+### Phase 4
+
+Organizations + RBAC
+
+### Phase 5
+
+Dashboard
+
+### Phase 6
+
+Contacts
+
+### Phase 7
+
+Segments + tags
+
+### Phase 8
+
+Channels
+
+### Phase 9
+
+WhatsApp provider
+
+### Phase 10
+
+Telegram provider
+
+### Phase 11
+
+SMS provider abstraction
+
+### Phase 12
+
+Email provider
+
+### Phase 13
+
+Templates
+
+### Phase 14
+
+Campaign builder
+
+### Phase 15
+
+Queue workers
+
+### Phase 16
+
+Campaign activation
+
+### Phase 17
+
+Delivery webhooks
+
+### Phase 18
+
+Correspondence inbox
+
+### Phase 19
+
+Notifications
+
+### Phase 20
+
+Email notification system
+
+### Phase 21
+
+Automation engine
+
+### Phase 22
+
+Reports
+
+### Phase 23
+
+Admin panel
+
+### Phase 24
+
+API + API keys
+
+### Phase 25
+
+Webhooks
+
+### Phase 26
+
+Security hardening
+
+### Phase 27
+
+Testing
+
+### Phase 28
+
+Docker deployment
+
+### Phase 29
+
+Documentation
+
+### Phase 30
+
+Final QA
+
+---
+
+# 70. IMPORTANT DEVELOPMENT RULE
+
+Do not attempt to generate the entire project as one giant incomplete file.
+
+Build the application incrementally.
+
+After each phase:
+
+1. Create the files
+2. Implement functionality
+3. Run tests
+4. Fix errors
+5. Verify database migrations
+6. Verify API endpoints
+7. Verify UI
+8. Continue to the next phase
+
+Maintain a `PROJECT_STATUS.md` file showing:
+
+```text
+[✓] Project setup
+[✓] Database
+[✓] Authentication
+[✓] Contacts
+[ ] WhatsApp
+[ ] Telegram
+[ ] SMS
+...
+```
+
+Do not mark a feature complete until it actually works.
+
+---
+
+# 71. FINAL DELIVERABLE
+
+At completion provide:
+
+```text
+Complete source code
+Database schema
+Migrations
+Seed data
+Docker configuration
+Environment template
+API documentation
+Webhook documentation
+Provider integration documentation
+README
+Testing suite
+Admin panel
+User dashboard
+```
+
+The final product must be capable of being deployed on a VPS or cloud server.
+
+The application should be designed so additional channels can later be added without rewriting the campaign engine.
+
+Use a provider abstraction:
+
+```text
+Channel
+   ↓
+Provider Interface
+   ↓
+WhatsAppProvider
+TelegramProvider
+SmsProvider
+EmailProvider
+```
+
+The campaign engine should communicate with the interface rather than directly depending on a specific provider.
+
+This is critical for future scalability.
+
+---
+
+# FINAL INSTRUCTION TO THE CODING AGENT
+
+Start building the application now.
+
+First create the project architecture and database schema.
+
+Then implement the application phase-by-phase according to the development order above.
+
+Do not skip authentication, tenant isolation, security, queues, webhooks, error handling, notifications, correspondence, or audit logs.
+
+Prioritize a functional end-to-end MVP first:
+
+```text
+Register
+→ Login
+→ Create Organization
+→ Add Contacts
+→ Connect Channel
+→ Create Campaign
+→ Send Test Message
+→ Queue Message
+→ Receive Provider Status
+→ Show Delivery Status
+→ Receive Reply
+→ Show Reply in Correspondence
+→ Notify User
+→ Show Analytics
+```
+
+After that, complete the remaining features.
+
+The final result should look and feel like a polished commercial SaaS product, while remaining free/open-source/self-hostable and compliant with the rules of each communication provider.
