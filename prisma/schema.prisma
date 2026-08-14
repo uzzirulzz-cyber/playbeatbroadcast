@@ -1,12 +1,12 @@
 // BroadcastHub - AI-powered omnichannel communication platform
-// Prisma schema (SQLite)
+// Prisma schema (PostgreSQL — Neon)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
