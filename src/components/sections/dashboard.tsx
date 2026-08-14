@@ -23,24 +23,29 @@ export function DashboardSection() {
 
   return (
     <div className="space-y-6">
-      {/* Hero */}
-      <Card className="bg-gradient-to-br from-primary/10 via-card to-ai/10 border-primary/20">
-        <CardContent className="p-6">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
+      {/* Hero — travel-magazine editorial header */}
+      <Card className="bh-hero-gradient border-border overflow-hidden">
+        <CardContent className="p-6 sm:p-8 relative">
+          <div className="flex flex-col lg:flex-row lg:items-end gap-4 justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-2xl font-bold">Welcome back, Sara</h2>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">
+                Omnichannel · AI · Broadcasting
+              </div>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h2 className="text-3xl sm:text-4xl font-bold" style={{ fontFamily: "var(--font-fraunces)" }}>
+                  Welcome back, <span className="italic text-primary">Sara</span>
+                </h2>
                 <AiStatusInline />
               </div>
-              <p className="text-sm text-muted-foreground max-w-xl">
-                Your AI-powered omnichannel communication platform. {m.activeCampaigns} active campaign{m.activeCampaigns !== 1 ? "s" : ""}, {m.openConversations} open conversation{m.openConversations !== 1 ? "s" : ""}.
+              <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                Your AI-powered omnichannel communication platform. {m.activeCampaigns} active campaign{m.activeCampaigns !== 1 ? "s" : ""}, {m.openConversations} open conversation{m.openConversations !== 1 ? "s" : ""}, and {data.metrics.socialPostsPublished} social posts published.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button onClick={() => setSection("ai-campaign-writer")} variant="outline" className="border-ai/40 text-ai hover:bg-ai/10">
+              <Button onClick={() => setSection("ai-campaign-writer")} variant="outline" className="border-ai/40 text-ai hover:bg-ai/10 bh-pill">
                 <Sparkles className="h-3.5 w-3.5" /> AI Campaign Writer
               </Button>
-              <Button onClick={() => setSection("campaigns")} className="bg-primary">
+              <Button onClick={() => setSection("campaigns")} className="bh-pill">
                 <Megaphone className="h-3.5 w-3.5" /> New Campaign
               </Button>
             </div>

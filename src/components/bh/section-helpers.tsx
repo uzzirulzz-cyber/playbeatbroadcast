@@ -17,9 +17,14 @@ export function SectionHeader({
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+        <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-1.5">
+          BroadcastHub
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-fraunces)" }}>
+          {title}
+        </h2>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+          <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl leading-relaxed">
             {description}
           </p>
         )}
@@ -43,18 +48,18 @@ export function StatCard({
   tone?: "default" | "ai" | "warning" | "success";
 }) {
   return (
-    <Card>
+    <Card className="bh-card-soft">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div>
-            <div className="text-sm text-muted-foreground">{label}</div>
-            <div className="text-2xl font-bold mt-1">{value}</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">{label}</div>
+            <div className="text-2xl font-bold mt-1.5" style={{ fontFamily: "var(--font-fraunces)" }}>{value}</div>
             {hint && <div className="text-xs text-muted-foreground mt-1">{hint}</div>}
           </div>
           {icon && (
             <div
               className={cn(
-                "h-9 w-9 rounded-lg flex items-center justify-center",
+                "h-10 w-10 rounded-xl flex items-center justify-center",
                 tone === "ai" && "bg-ai/10 text-ai",
                 tone === "warning" && "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
                 tone === "success" && "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300",

@@ -107,11 +107,11 @@ export function Sidebar() {
         {/* Brand */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-sidebar-border shrink-0">
           <Link href="/" className="flex items-center gap-2.5" onClick={() => handleSelect("dashboard")}>
-            <div className="h-9 w-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shadow-sm">
+            <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shadow-sm" style={{ fontFamily: "var(--font-fraunces)" }}>
               B
             </div>
             <div className="leading-tight">
-              <div className="font-bold text-sidebar-foreground">BroadcastHub</div>
+              <div className="font-bold text-sidebar-foreground" style={{ fontFamily: "var(--font-fraunces)" }}>BroadcastHub</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
                 Omnichannel · AI
               </div>

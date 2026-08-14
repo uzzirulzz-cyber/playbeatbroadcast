@@ -66,11 +66,16 @@ export function AISectionIntro({
 }) {
   return (
     <div className="space-y-3 mb-6">
-      <div className="flex items-center gap-2">
-        <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-ai font-semibold">
+        AI Assistant
+      </div>
+      <div className="flex items-center gap-2 flex-wrap">
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-fraunces)" }}>
+          {title}
+        </h2>
         <AiBadge />
       </div>
-      <p className="text-sm text-muted-foreground max-w-2xl">{description}</p>
+      <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">{description}</p>
       <AIDemoNotice isDemo={isDemo} />
     </div>
   );

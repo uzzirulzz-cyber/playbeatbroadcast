@@ -18,7 +18,7 @@ export const AiButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     <Button
       ref={ref}
       className={cn(
-        "bg-ai text-ai-foreground hover:bg-ai/90 gap-1.5",
+        "bg-ai text-ai-foreground hover:bg-ai/90 gap-1.5 rounded-full shadow-sm",
         className,
       )}
       {...props}

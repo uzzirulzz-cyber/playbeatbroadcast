@@ -24,7 +24,7 @@ export function Header() {
         <Menu className="h-5 w-5" />
       </Button>
       <div className="flex-1 min-w-0">
-        <h1 className="text-lg font-semibold truncate">{title}</h1>
+        <h1 className="text-lg font-semibold truncate" style={{ fontFamily: "var(--font-fraunces)" }}>{title}</h1>
       </div>
       <AiStatusInline />
       <Button
